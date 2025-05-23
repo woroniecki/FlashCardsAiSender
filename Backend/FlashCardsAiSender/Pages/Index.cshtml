@@ -1,0 +1,10 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@User.Identity.IsAuthenticated
+
+<h2>You are not logged in</h2>
+<a href="/Account/Login">Go to login page</a>

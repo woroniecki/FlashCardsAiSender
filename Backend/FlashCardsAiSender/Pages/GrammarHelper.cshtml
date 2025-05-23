@@ -1,0 +1,56 @@
+﻿@page
+@model GrammarHelperModel
+@using Microsoft.AspNetCore.Authorization
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h2>Ask a question about English</h2>
+    <form method="post" asp-page-handler="Ask">
+        <textarea asp-for="UserQuestion" rows="4" cols="50" placeholder="Type your grammar question here..."></textarea>
+        <br />
+        <select asp-for="SelectedPromptType" asp-items="Html.GetEnumSelectList<PromptType>()"></select>
+        <br />
+        <br />
+        <button type="submit">Ask OpenAI</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Answer))
+    {
+        <h3>Answer:</h3>
+        <p style="color: red;">@Model.Answer</p>
+    }
+    @if (Model.Flashcards != null && Model.Flashcards.Any())
+    {
+        <h3>Generated Flashcards:</h3>
+            <ul>
+                @foreach (var card in Model.Flashcards)
+                {
+                    <li>
+                        <strong>Q:</strong> @card.Question <br />
+                        <strong>A:</strong> @card.Answer
+                        <form method="post" asp-page-handler="SendFlashcard">
+                            <input type="hidden" name="question" value="@card.Question" />
+                            <input type="hidden" name="answer" value="@card.Answer" />
+                            <button type="submit">Send to Supermemo</button>
+                        </form>
+                        <hr />
+                    </li>
+                }
+            </ul>
+
+        <form method="post" asp-page-handler="SendAll">
+            <!-- This button sends all flashcards at once -->
+            <button type="submit">Send All to Supermemo</button>
+        </form>
+    }
+    @if (!string.IsNullOrEmpty(Model.SendTime))
+    {
+        
+        <h3>Send at time:</h3>
+        <p>@Model.SendTime</p>
+    }
+}
+else
+{
+    <h2>Please <a href="/Account/Login">log in</a> to use the English helper.</h2>
+}

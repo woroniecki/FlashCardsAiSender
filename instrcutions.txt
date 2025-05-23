@@ -1,0 +1,39 @@
+Adding new module:
+1. Duplicate clear Projects Infrastracture, Api, App, Domain
+2. Rename folders in convention Modules.ModuleName.API/Domain etc
+3. Add projects to solution in Modules/ModuleName/
+4. Rename projects to Modules.ModuleName.API/Domain etc
+5. Check all project references and fix them
+6. Find DBContext and rename it to ModuleNameDbContext
+7. Replace all usings and namespaces
+8. Add all references in bootstrapper
+<ProjectReference Include="..\Modules\Core\Modules.Core.API\Modules.Core.API.csproj" />
+<ProjectReference Include="..\Modules\Core\Modules.Core.App\Modules.Core.App.csproj" />
+<ProjectReference Include="..\Modules\Core\Modules.Core.Infrastructure\Modules.Core.Infrastructure.csproj" />
+9. Initilize new module in Program.cs
+builder.Services.AddCoreModule();
+10. Add create database w init-db.sql
+11. Add UnitTests project
+12. Repkace ApiName, to segragate endpoints
+13. If needed you can add it to background tasks
+
+Adding new integration event:
+1. Create class in project Module.ModuleName.IntegrationEvent
+if project not exists, create empty
+2. Make class to inherit IntegrationEvent
+3. Add integration event to injected IEventsQueueService
+4. Event will be executed automatically by mediatr pipeline
+
+Domain events description
+
+Using BaseDbContext, so modifiedTime on aggregates is updated automatically on saveChanges
+
+To run locally docker enviroment use RunLocalDockerEnv.cmd
+
+If you need some communication between modules, to query data from other module, I reccomend to create new project and add client to it, as simulation of calling other module API by network, in other hand if there is requitment for some action I would reccomend to use integration events
+It suppose to make it much easier in case of moving to microservices
+
+Instruction to run 1st project
+
+Optional simple background tasks container, if not needed comment
+

@@ -1,0 +1,11 @@
+﻿@page
+@model LoginModel
+
+<h2>Login</h2>
+
+<form method="post">
+    <input asp-for="Username" placeholder="Username" />
+    <input asp-for="Password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
+    <span asp-validation-summary="All"></span>
+</form>

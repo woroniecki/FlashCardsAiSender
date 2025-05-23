@@ -1,0 +1,19 @@
+﻿version: '3.9'
+
+services:
+  flashaicards:
+    build:
+      context: ../Backend/
+      dockerfile: Bootstrapper.Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Cors__Origin=*
+      - Auth__Usename=${Auth__Usename}
+      - Auth__Password=${Auth__Password}
+      - OpenAiKey=${OpenAiKey}
+      - JwtSecretKey=${JwtSecretKey}
+      - Supermemo__Username=${Supermemo__Username}
+      - Supermemo__Password=${Supermemo__Password}
+    ports:
+      - "5123:80"
