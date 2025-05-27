@@ -7,7 +7,7 @@ services:
       dockerfile: Bootstrapper.Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:80
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - Cors__Origin=*
       - Auth__Username=${Auth__Username}
       - Auth__Password=${Auth__Password}
