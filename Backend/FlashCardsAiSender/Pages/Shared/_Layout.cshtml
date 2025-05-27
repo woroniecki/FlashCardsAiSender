@@ -11,19 +11,18 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">FlashCardsAiSender</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <h2>@User.Identity.Name</h2>
-                <form method="post" asp-page="/Account/Logout">
-                    <button type="submit">Logout</button>
-                </form>
+        <nav class="navbar navbar-expand-sm navbar-light border-bottom shadow-sm mb-1">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="navbar-brand fw-bold" asp-area="" asp-page="/Index">FlashCardsAi</a>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-semibold">@User.Identity?.Name</span>
+                    <form method="post" asp-page="/Account/Logout" class="m-0">
+                        <button type="submit" class="btn btn-sm btn-primary">Logout</button>
+                    </form>
+                </div>
             </div>
         </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">

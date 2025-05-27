@@ -4,53 +4,67 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <h2>Ask a question about English</h2>
-    <form method="post" asp-page-handler="Ask">
-        <textarea asp-for="UserQuestion" rows="4" cols="50" placeholder="Type your grammar question here..."></textarea>
-        <br />
-        <select asp-for="SelectedPromptType" asp-items="Html.GetEnumSelectList<PromptType>()"></select>
-        <br />
-        <br />
-        <button type="submit">Ask OpenAI</button>
+
+    <h2 class="mb-3">Ask a Question About English</h2>
+
+    <form method="post" asp-page-handler="Ask" class="flashcard-form card">
+        <div class="mb-2">
+            <label asp-for="UserQuestion" class="form-label">Your Question</label>
+            <textarea asp-for="UserQuestion" class="form-control" rows="4" placeholder="Type your grammar question here..."></textarea>
+        </div>
+        <div class="mb-2">
+            <label asp-for="SelectedPromptType" class="form-label">Prompt Type</label>
+            <select asp-for="SelectedPromptType" class="form-select" asp-items="Html.GetEnumSelectList<PromptType>()"></select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="background-color: #1b6ec2; border-color: #1861ac;">Ask OpenAI</button>
     </form>
 
     @if (!string.IsNullOrEmpty(Model.Answer))
     {
-        <h3>Answer:</h3>
-        <p style="color: red;">@Model.Answer</p>
+        <div class="answer-box alert alert-warning">
+            <strong>Answer:</strong> @Model.Answer
+        </div>
     }
-    @if (Model.Flashcards != null && Model.Flashcards.Any())
+
+    @if (!string.IsNullOrEmpty(Model.SendTime))
     {
-        <h3>Generated Flashcards:</h3>
-            <ul>
-                @foreach (var card in Model.Flashcards)
-                {
-                    <li>
-                        <strong>Q:</strong> @card.Question <br />
-                        <strong>A:</strong> @card.Answer
+        <p class="text-muted">Last sent at: <strong>@Model.SendTime</strong></p>
+    }
+
+    @if (Model.Flashcards?.Any() == true)
+    {
+        <h3 class="mt-4">Generated Flashcards</h3>
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            @foreach (var card in Model.Flashcards)
+            {
+                <div class="col">
+                    <div class="flashcard">
+                        <p><strong>Q:</strong> @card.Question</p>
+                        <p><strong>A:</strong> @card.Answer</p>
                         <form method="post" asp-page-handler="SendFlashcard">
                             <input type="hidden" name="question" value="@card.Question" />
                             <input type="hidden" name="answer" value="@card.Answer" />
-                            <button type="submit">Send to Supermemo</button>
+                            <input type="hidden" asp-for="SelectedPromptType" />
+                            <button type="submit" class="btn btn-success btn-sm">Send to Supermemo</button>
                         </form>
-                        <hr />
-                    </li>
-                }
-            </ul>
+                    </div>
+                </div>
+            }
+        </div>
 
-        <form method="post" asp-page-handler="SendAll">
-            <!-- This button sends all flashcards at once -->
-            <button type="submit">Send All to Supermemo</button>
+        <form method="post" asp-page-handler="SendAll" class="send-all-form">
+            <input type="hidden" asp-for="SelectedPromptType" />
+            <button type="submit" class="btn btn-outline-success">Send All to Supermemo</button>
         </form>
-    }
-    @if (!string.IsNullOrEmpty(Model.SendTime))
-    {
-        
-        <h3>Send at time:</h3>
-        <p>@Model.SendTime</p>
+
+        <form method="post" asp-page-handler="Clear" class="d-inline">
+            <button type="submit" class="btn btn-secondary mt-2 ms-2">Clear</button>
+        </form>
     }
 }
 else
 {
-    <h2>Please <a href="/Account/Login">log in</a> to use the English helper.</h2>
+    <div class="alert alert-warning text-center">
+        <h4>Please <a href="/Account/Login">log in</a> to use the English Helper.</h4>
+    </div>
 }

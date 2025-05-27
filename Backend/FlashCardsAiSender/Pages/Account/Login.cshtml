@@ -1,11 +1,26 @@
 ﻿@page
 @model LoginModel
 
-<h2>Login</h2>
+<div class="card p-3 shadow-sm" style="max-width: 400px; margin: 1rem auto;">
+    <h2 class="text-center mb-3">Login</h2>
 
-<form method="post">
-    <input asp-for="Username" placeholder="Username" />
-    <input asp-for="Password" type="password" placeholder="Password" />
-    <button type="submit">Login</button>
-    <span asp-validation-summary="All"></span>
-</form>
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+
+        <div class="text-danger mt-2">
+            <span asp-validation-summary="All"></span>
+        </div>
+    </form>
+</div>

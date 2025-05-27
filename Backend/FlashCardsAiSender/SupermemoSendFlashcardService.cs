@@ -8,13 +8,26 @@ public class SupermemoFlashcardService
     private readonly SupermemoJwtTokenService _jwtTokenService;
     private const string EndpointUrl = "https://learn.supermemo.com/api/users/2549032/pages?contentType=json";
 
+    const string ENGLISH = "15";
+    const string POLISH = "47";
+
+    public static readonly Dictionary<PromptType, (string FromLang, string ToLang)> LanguageMap =
+        new()
+        {
+            { PromptType.WordTo_ExplanationEng_WordTranslation, (ENGLISH, ENGLISH) },
+            { PromptType.WordTo_SentancePl_SentanceEng, (POLISH, ENGLISH) },
+            { PromptType.GrammarRuleTo_SentancePl_SentanceEng, (POLISH, ENGLISH) },
+            { PromptType.SentenceTo_SentencePl_SentanceEng, (POLISH, ENGLISH) },
+            { PromptType.WordsListTo_ExplanationEng_WordTranslation, (ENGLISH, ENGLISH) }
+        };
+
     public SupermemoFlashcardService(IHttpClientFactory httpClientFactory, SupermemoJwtTokenService jwtTokenService)
     {
         _httpClient = httpClientFactory.CreateClient();
         _jwtTokenService = jwtTokenService;
     }
 
-    public async Task SendFlashcardAsync(string question, string answer)
+    public async Task SendFlashcardAsync(string question, string answer, PromptType promptType)
     {
         var token = await _jwtTokenService.GetValidTokenAsync();
 
@@ -24,8 +37,8 @@ public class SupermemoFlashcardService
             answer = JsonSerializer.Serialize(new { content = answer, media = new object[] { } }),
             speechSettings = JsonSerializer.Serialize(new
             {
-                question = new { tts = true, stt = (string?)null, lang = "15" },
-                answer = new { tts = true, stt = true, lang = "15" }
+                question = new { tts = true, stt = (string?)null, lang = LanguageMap[promptType].FromLang },
+                answer = new { tts = true, stt = true, lang = LanguageMap[promptType].ToLang }
             })
         };
 

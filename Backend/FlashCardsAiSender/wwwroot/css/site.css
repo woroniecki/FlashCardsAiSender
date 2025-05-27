@@ -29,3 +29,33 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* FlashCardsAiSender custom styles */
+.flashcard-form,
+.flashcard,
+.answer-box,
+.send-all-form {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+}
+
+.flashcard {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+textarea.form-control,
+select.form-select {
+    margin-bottom: 0.5rem;
+}
+
+.btn {
+    margin-top: 0.5rem;
+    min-width: 150px;
+}
+
+form input,
+form button {
+    margin-bottom: 0.5rem;
+}

@@ -32,8 +32,17 @@ public class GrammarHelperModel : PageModel
     [BindProperty]
     public string Answer { get; set; }
 
+    [TempData]
+    public string FlashcardsJson { get; set; }
+
     [BindProperty]
     public List<Flashcard> Flashcards { get; set; } = new();
+
+    public void OnGet()
+    {
+        if (!string.IsNullOrEmpty(FlashcardsJson))
+            Flashcards = JsonSerializer.Deserialize<List<Flashcard>>(FlashcardsJson);
+    }
 
     public string SendTime { get; set; }
 
@@ -94,6 +103,7 @@ public class GrammarHelperModel : PageModel
                 }).ToList();
 
             Flashcards = flashcards;
+            FlashcardsJson = JsonSerializer.Serialize(flashcards);
         }
         catch
         {
@@ -149,13 +159,26 @@ public class GrammarHelperModel : PageModel
             return Page();
         }
 
-        await _supermemoFlashcardService.SendFlashcardAsync(question, answer);
+        if (!string.IsNullOrEmpty(FlashcardsJson))
+        {
+            Flashcards = JsonSerializer.Deserialize<List<Flashcard>>(FlashcardsJson);
+        }
+
+        await _supermemoFlashcardService.SendFlashcardAsync(question, answer, SelectedPromptType);
         SendTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        FlashcardsJson = JsonSerializer.Serialize(Flashcards);
+        TempData["FlashcardsJson"] = FlashcardsJson;
+
         return Page();
     }
 
     public async Task<IActionResult> OnPostSendAllAsync()
     {
+        if (!string.IsNullOrEmpty(FlashcardsJson))
+        {
+            Flashcards = JsonSerializer.Deserialize<List<Flashcard>>(FlashcardsJson);
+        }
+
         if (Flashcards == null || !Flashcards.Any())
         {
             ModelState.AddModelError(string.Empty, "No flashcards to send.");
@@ -164,11 +187,28 @@ public class GrammarHelperModel : PageModel
 
         foreach (var card in Flashcards)
         {
-            await _supermemoFlashcardService.SendFlashcardAsync(card.Question, card.Answer);
+            await _supermemoFlashcardService.SendFlashcardAsync(card.Question, card.Answer, SelectedPromptType);
         }
 
+        Answer = Flashcards.Select(fc => $"{fc.Answer}, ").Aggregate((current, next) => current + next);
+
+        FlashcardsJson = JsonSerializer.Serialize(Flashcards);
+        TempData["FlashcardsJson"] = FlashcardsJson;
         SendTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
         return Page();
     }
 
+    public IActionResult OnPostClear()
+    {
+        Flashcards.Clear();
+        FlashcardsJson = string.Empty;
+        Answer = string.Empty;
+        SendTime = string.Empty;
+
+        // Clear TempData as well
+        TempData.Remove(nameof(FlashcardsJson));
+
+        return RedirectToPage();
+    }
 }
