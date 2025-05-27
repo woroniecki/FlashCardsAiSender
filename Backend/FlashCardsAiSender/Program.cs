@@ -16,31 +16,11 @@ builder.Services.AddAuthentication("Bearer")
         {
             OnMessageReceived = context =>
             {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-
                 var token = context.Request.Cookies["jwt"]; // 👈 Read from cookie
-                if (string.IsNullOrEmpty(token))
-                {
-                    logger.LogWarning("JWT cookie not found or is empty.");
-                }
-                else
+                if (!string.IsNullOrEmpty(token))
                 {
                     context.Token = token;
-                    logger.LogInformation("JWT token retrieved from cookie: {Token}", token);
                 }
-
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogError(context.Exception, "Authentication failed.");
-                return Task.CompletedTask;
-            },
-            OnTokenValidated = context =>
-            {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("JWT token successfully validated for user: {User}", context.Principal?.Identity?.Name ?? "Unknown");
                 return Task.CompletedTask;
             }
         };
@@ -54,8 +34,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = "yourdomain.com",
             ValidAudience = "yourdomain.com",
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["JwtSecretKey"]
-                    ?? throw new InvalidOperationException("JWT key not found")))
+                Encoding.UTF8.GetBytes(configuration["JwtSecretKey"] ?? throw new InvalidOperationException("JWT key not found")))
         };
     });
 
