@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
@@ -36,6 +37,10 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes(configuration["JwtSecretKey"] ?? throw new InvalidOperationException("JWT key not found")))
         };
     });
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+    .SetApplicationName("FlashCardsAiSender");
 
 // Add services to the container.
 builder.Services.AddRazorPages();

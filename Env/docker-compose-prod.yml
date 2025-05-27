@@ -17,3 +17,5 @@ services:
       - Supermemo__Password=${Supermemo__Password}
     ports:
       - "5123:80"
+    volumes:
+      - ./dataprotection-keys:/keys
