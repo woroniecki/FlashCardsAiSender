@@ -9,7 +9,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Production
       - Cors__Origin=*
-      - Auth__Usename=${Auth__Usename}
+      - Auth__Username=${Auth__Usename}
       - Auth__Password=${Auth__Password}
       - OpenAiKey=${OpenAiKey}
       - JwtSecretKey=${JwtSecretKey}
